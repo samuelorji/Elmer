@@ -1,0 +1,12 @@
+.idea
+target/
+
+# Compile results
+target/**
+project/project/**
+project/target/**
+
+
+core/target/**
+foodorderservice/target/**
+webservice/target/**

@@ -29,6 +29,7 @@ object OrderRequestGateway {
     name: FoodName.Value,
     quantity: Int
   ) extends ATCCPrinter
+
   case class FoodOrderGatewayResponse(
     status: FoodOrderStatus.Value,
     description: String
@@ -57,11 +58,13 @@ private[request] class OrderRequestGateway extends Actor
             quantity = req.quantity
           )
         ).to[MessageEntity]
-        response <- sendHttpRequest(HttpRequest(
-          method = HttpMethods.POST,
-          uri    = orderRequestUrl,
-          entity = entity
-        ))
+        response <- sendHttpRequest(
+          HttpRequest(
+            method = HttpMethods.POST,
+            uri    = orderRequestUrl,
+            entity = entity
+          )
+        )
       } yield response
       sendFut onComplete {
         case Success(response) =>

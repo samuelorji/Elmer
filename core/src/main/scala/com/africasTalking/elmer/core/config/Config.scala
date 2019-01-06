@@ -11,7 +11,7 @@ object ElmerConfig extends ATBaseConfigT {
   val webHost = config.getString("elmer.interface.web.host")
   val webPort = config.getInt("elmer.interface.web.port")
 
-  // Broker Order Url
+  // Brokers
   val etherOrderRequestUrl = config.getString("elmer.broker.ether.order-request-url")
 
 }

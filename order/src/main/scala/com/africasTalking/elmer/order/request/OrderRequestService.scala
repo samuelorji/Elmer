@@ -34,9 +34,9 @@ object OrderRequestService {
 
 }
 
-class OrderRequestService extends Actor
-    with SnoopErrorPublisherT
-    with ActorLogging {
+class OrderRequestService extends Actor    
+    with ActorLogging
+    with SnoopErrorPublisherT {
 
   implicit val timeout = Timeout(ATConfig.httpRequestTimeout)
 
@@ -60,7 +60,7 @@ class OrderRequestService extends Actor
             description = response.description
           )
         case Failure(error)    =>
-          publishError(s"Error while processing " + req, Some(error))
+          publishError("Error while processing " + req, Some(error))
           currentSender ! FoodOrderServiceResponse(
             status      = FoodOrderStatus.Failed,
             description = "Internal error while processing request"

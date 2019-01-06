@@ -17,7 +17,7 @@ class Application extends ApplicationLifecycle with ATLogT {
 
   private[this] var started: Boolean = false
 
-  private val applicationName = "ether-web"
+  private val applicationName = "elmer-web"
   implicit val system         = ActorSystem(s"$applicationName-system")
 
   def start() {

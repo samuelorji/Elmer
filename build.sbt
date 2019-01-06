@@ -29,9 +29,9 @@ lazy val core = (project in file("core")).
     libraryDependencies ++= Seq(
       "io.atlabs"         %% "horus-core"      % atLibsVersion,
       "com.typesafe.akka" %% "akka-actor"      % akkaVersion,
+      "com.typesafe.akka" %% "akka-slf4j"      % akkaVersion,
       "ch.qos.logback"    %  "logback-classic" % "1.2.3",
       "commons-daemon"    %  "commons-daemon"  % "1.1.0",
-      "com.typesafe.akka" %% "akka-slf4j"      % akkaVersion,
       "org.scalatest"     %% "scalatest"       % scalaTestVersion   % Test
     )
   )

@@ -20,6 +20,7 @@ object OrderRequestGatewayMarshalling {
     name: FoodName.Value,
     quantity: Int
   ) extends ATCCPrinter
+  
   case class EtherFoodOrderResponse(
     status: FoodOrderStatus.Value,
     description: String

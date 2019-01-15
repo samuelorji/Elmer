@@ -18,7 +18,7 @@ lazy val sharedSettings = Seq(
 lazy val elmer = (project in file("."))
   .aggregate(core, order, web)
 
-val atLibsVersion    = "0.1.10"
+val atLibsVersion    = "0.1.12"
 val akkaVersion      = "2.5.19"
 val akkaHttpVersion  = "10.1.7"
 val scalaTestVersion = "3.0.5"

@@ -14,7 +14,7 @@ import com.africasTalking._
 import elmer.core.util.{ ElmerEnum, ElmerJsonProtocol }
 import ElmerEnum.{ FoodName, FoodOrderStatus }
 
-object OrderRequestGatewayMarshalling {
+private[gateway] object OrderRequestGatewayMarshalling {
 
   case class EtherFoodOrderRequest(
     name: FoodName.Value,
@@ -29,7 +29,7 @@ object OrderRequestGatewayMarshalling {
   trait OrderRequestGatewayJsonSupportT extends SprayJsonSupport
       with DefaultJsonProtocol {
     import ElmerJsonProtocol._
-
+    
     implicit val RequestFormat  = jsonFormat2(EtherFoodOrderRequest)
     implicit val ResponseFormat = jsonFormat2(EtherFoodOrderResponse)
   }

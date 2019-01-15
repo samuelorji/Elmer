@@ -50,7 +50,7 @@ class OrderRequestGatewaySpec extends TestHttpStringEndpointT
         description = "Internal error while sending request to the gateway"
       ))
     }
-    "process an invalid valid status code from the broker" in {
+    "process an invalid status code from the broker" in {
       gateway ! FoodOrderGatewayRequest(
         name     = FoodName.BeefStew,
         quantity = 3

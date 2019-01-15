@@ -3,7 +3,7 @@ package service
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-import akka.actor._
+import akka.actor.Props
 import akka.event.Logging
 import akka.http.scaladsl.model._
 import akka.http.scaladsl.server.Directives._

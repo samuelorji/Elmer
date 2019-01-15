@@ -23,7 +23,7 @@ import elmer.core.util.ElmerEnum.{ FoodName, FoodOrderStatus }
 
 import OrderRequestGatewayMarshalling._
 
-object OrderRequestGateway {
+private[request] object OrderRequestGateway {
 
   case class FoodOrderGatewayRequest(
     name: FoodName.Value,

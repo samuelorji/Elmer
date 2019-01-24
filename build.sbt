@@ -18,7 +18,7 @@ lazy val sharedSettings = Seq(
 lazy val elmer = (project in file("."))
   .aggregate(core, order, web)
 
-val atLibsVersion    = "0.1.12"
+val atLibsVersion    = "0.1.13"
 val akkaVersion      = "2.5.19"
 val akkaHttpVersion  = "10.1.7"
 val scalaTestVersion = "3.0.5"
@@ -27,12 +27,14 @@ lazy val core = (project in file("core")).
   settings(
     sharedSettings,
     libraryDependencies ++= Seq(
-      "io.atlabs"         %% "horus-core"      % atLibsVersion,
-      "com.typesafe.akka" %% "akka-actor"      % akkaVersion,
-      "com.typesafe.akka" %% "akka-slf4j"      % akkaVersion,
-      "ch.qos.logback"    %  "logback-classic" % "1.2.3",
-      "commons-daemon"    %  "commons-daemon"  % "1.1.0",
-      "org.scalatest"     %% "scalatest"       % scalaTestVersion   % Test
+      "io.atlabs"           %% "horus-core"      % atLibsVersion,
+      "com.typesafe.akka"   %% "akka-actor"      % akkaVersion,
+      "com.typesafe.akka"   %% "akka-slf4j"      % akkaVersion,
+      "ch.qos.logback"      %  "logback-classic" % "1.2.3",
+      "commons-daemon"      %  "commons-daemon"  % "1.1.0",
+      "com.github.mauricio" %% "mysql-async"     % "0.2.21",
+      "com.typesafe.akka"   %% "akka-testkit"    % akkaVersion      % Test,
+      "org.scalatest"       %% "scalatest"       % scalaTestVersion % Test
     )
   )
 

@@ -1,0 +1,7 @@
+- get docker and run:
+docker deploy -c docker-compose.yml elmer-test-service
+- initialize the dbs:
+./deploy.sh
+
+- to remove all services:
+docker service rm $(docker service ls -q)

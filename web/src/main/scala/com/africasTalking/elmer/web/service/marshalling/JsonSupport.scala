@@ -9,12 +9,10 @@ import com.africasTalking._
 
 import elmer.core.util.ElmerJsonProtocol
 
-import elmer.order.request.OrderRequestService._
-
 trait WebJsonSupportT extends DefaultJsonProtocol with SprayJsonSupport {
 
   import ElmerJsonProtocol._
 
-  implicit val FoodOrderServiceRequestFormat  = jsonFormat2(FoodOrderServiceRequest)
-  implicit val FoodOrderServiceResponseFormat = jsonFormat2(FoodOrderServiceResponse)
+  implicit val FoodOrderRequestFormat  = jsonFormat3(FoodOrderRequest)
+  implicit val FoodOrderResponseFormat = jsonFormat2(FoodOrderResponse.apply)
 }

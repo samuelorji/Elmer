@@ -22,7 +22,9 @@ import elmer.order.request.OrderRequestService
 
 import marshalling._
 
-trait ElmerWebServiceT extends ElmerCoreServiceT with WebJsonSupportT {
+trait ElmerWebServiceT extends ElmerCoreServiceT
+    with WebJsonSupportT
+    with UserAuthenticationDirectiveT {
 
   def snoopServiceName            = "elmer-web"
 
@@ -35,9 +37,13 @@ trait ElmerWebServiceT extends ElmerCoreServiceT with WebJsonSupportT {
     path("order" / "request") {
       logRequestResult("order:request", Logging.InfoLevel) {
         post {
-          entity(as[FoodOrderServiceRequest]) { request =>
-            complete {
-              (orderRequestService ? request).mapTo[FoodOrderServiceResponse]
+          entity(as[FoodOrderRequest]) { request =>
+            authenticateUser(request.username) { userId =>
+              complete(StatusCodes.Created, {
+                (orderRequestService ? request.getServiceRequest).mapTo[FoodOrderServiceResponse]  map { x =>
+                  FoodOrderResponse.fromServiceResponse(x)
+                }
+              })
             }
           }
         }

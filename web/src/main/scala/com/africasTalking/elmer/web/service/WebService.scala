@@ -19,6 +19,7 @@ import com.africasTalking._
 import elmer.core.util.ElmerCoreServiceT
 
 import elmer.order.request.OrderRequestService
+import elmer.order.status.OrderStatusService
 
 import marshalling._
 
@@ -31,6 +32,7 @@ trait ElmerWebServiceT extends ElmerCoreServiceT
   implicit val timeout            = Timeout(ATConfig.httpRequestTimeout)
 
   private val orderRequestService = actorRefFactory.actorOf(Props[OrderRequestService])
+  private val orderStatusService  = actorRefFactory.actorOf(Props[OrderStatusService])
 
   import OrderRequestService._
   lazy val route = {
@@ -44,6 +46,18 @@ trait ElmerWebServiceT extends ElmerCoreServiceT
                   FoodOrderResponse.fromServiceResponse(x)
                 }
               })
+            }
+          }
+        }
+      }
+    } ~
+    path("order" / "status") {
+      logRequestResult("order:status", Logging.InfoLevel) {
+        post {
+          entity(as[EtherFoodOrderStatusRequest]) { request =>
+            complete {
+              orderStatusService ! request.getServiceRequest
+              StatusCodes.OK
             }
           }
         }

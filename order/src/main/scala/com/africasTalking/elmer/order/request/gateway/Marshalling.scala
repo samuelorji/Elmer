@@ -18,10 +18,12 @@ private[gateway] object OrderRequestGatewayMarshalling {
 
   case class EtherFoodOrderRequest(
     name: FoodName.Value,
-    quantity: Int
+    quantity: Int,
+    callbackUrl: String
   ) extends ATCCPrinter
   
   case class EtherFoodOrderResponse(
+    transactionId: String,
     status: FoodOrderStatus.Value,
     description: String
   ) extends ATCCPrinter
@@ -30,8 +32,8 @@ private[gateway] object OrderRequestGatewayMarshalling {
       with DefaultJsonProtocol {
     import ElmerJsonProtocol._
     
-    implicit val RequestFormat  = jsonFormat2(EtherFoodOrderRequest)
-    implicit val ResponseFormat = jsonFormat2(EtherFoodOrderResponse)
+    implicit val RequestFormat  = jsonFormat3(EtherFoodOrderRequest)
+    implicit val ResponseFormat = jsonFormat3(EtherFoodOrderResponse)
   }
 
 }

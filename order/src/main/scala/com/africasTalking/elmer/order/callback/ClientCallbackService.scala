@@ -25,7 +25,7 @@ import ClientCallbackServiceMarshalling._
 
 private[order] object ClientCallbackService {
 
-  case class ClientCallbackServiceRequest(
+  case class ClientCallbackStatusServiceRequest(
     transactionId: String,
     status: FoodOrderStatus.Value,
     description: String,
@@ -44,7 +44,7 @@ private[order] class ClientCallbackService extends Actor
   import ClientCallbackService._
   override def receive = {
 
-    case req: ClientCallbackServiceRequest =>
+    case req: ClientCallbackStatusServiceRequest =>
       log.info("processing " + req)
       val sendFut = for {
         entity   <- Marshal(

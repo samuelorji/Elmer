@@ -11,6 +11,10 @@ import akka.http.scaladsl.server._
 
 import org.scalatest.{ Matchers, WordSpec }
 
+import spray.json._
+
+import marshalling._
+
 class ElmerWebServiceSpec extends WordSpec
     with Matchers
     with ScalatestRouteTest
@@ -73,6 +77,20 @@ class ElmerWebServiceSpec extends WordSpec
         responseAs[String] shouldEqual "requirement failed: Quantity must be greater than zero"
       }
     }
+    "Reject a food order POST request that has an invalid callbackUrl" in {
+      HttpRequest(
+        method = HttpMethods.POST,
+        uri    = "/order/request",
+        entity = HttpEntity(
+          MediaTypes.`application/json`,
+          """{"username":"testuser1","foodName":"Ugali","quantity":1,"callbackUrl":"InvalidUrl"}"""
+        )
+      ) ~> Route.seal(route) ~> check {
+        status shouldEqual StatusCodes.BadRequest
+        responseAs[String] shouldEqual "requirement failed: Invalid callback url provided"
+      }
+    }
+ 
     "Reject a food order POST request that does not have an apikey" in {
       HttpRequest(
         method = HttpMethods.POST,
@@ -107,13 +125,18 @@ class ElmerWebServiceSpec extends WordSpec
         uri    = "/order/request",
         entity = HttpEntity(
           MediaTypes.`application/json`,
-          """{"username":"testuser1","foodName":"Ugali","quantity":2}"""
+          """{"username":"testuser1","foodName":"Ugali","quantity":2,"callbackUrl":"http://www,test.com.com/callback"}"""
         )
       ).withHeaders(
         RawHeader("apikey", "testpass1")
       ) ~> Route.seal(route) ~> check {
         status shouldEqual StatusCodes.Created
-        responseAs[String] shouldEqual """{"description":"Request accepted for processing","status":"Accepted"}"""
+        val response = responseAs[String].parseJson.convertTo[FoodOrderResponse]
+        response shouldEqual FoodOrderResponse(
+          transactionId = response.transactionId,
+          description   = "Request accepted for processing",
+          status        = "Accepted"
+        )
       }
     }
     "return a MethodNotAllowed error for PUT requests to the food ordering path" in {
@@ -122,6 +145,19 @@ class ElmerWebServiceSpec extends WordSpec
         responseAs[String] shouldEqual "HTTP method not allowed, supported methods: POST"
       }
     }
+    "Process a valid food order status POST request" in {
+      HttpRequest(
+        method = HttpMethods.POST,
+        uri    = "/order/status",
+        entity = HttpEntity(
+          MediaTypes.`application/json`,
+          """{"transactionId":"someTxnId","status":"Delivered","description":"The food has been delivered"}"""
+        )
+      ) ~> Route.seal(route) ~> check {
+        status shouldEqual StatusCodes.OK
+      }
+    }
+
     "leave requests to base path unhandled" in {
       Get() ~> route ~> check {
         handled shouldEqual false

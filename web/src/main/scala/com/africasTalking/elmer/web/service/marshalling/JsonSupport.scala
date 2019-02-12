@@ -14,7 +14,7 @@ trait WebJsonSupportT extends DefaultJsonProtocol with SprayJsonSupport {
   import ElmerJsonProtocol._
 
   implicit val FoodOrderRequestFormat  = jsonFormat4(FoodOrderRequest)
-  implicit val FoodOrderResponseFormat = jsonFormat2(FoodOrderResponse.apply)
+  implicit val FoodOrderResponseFormat = jsonFormat3(FoodOrderResponse.apply)
 
   implicit val EtherFoodOrderStatusRequestFormat = jsonFormat3(EtherFoodOrderStatusRequest)
 

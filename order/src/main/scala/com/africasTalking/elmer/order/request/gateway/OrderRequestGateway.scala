@@ -110,8 +110,11 @@ private[request] class OrderRequestGateway extends Actor
                       ).toJson.compactPrint,
                       lifetime = Some(statusElementLifetime)
                     )).mapTo[AddElementResult] onComplete {
-                      case Success(_)     =>
-                      case Failure(error) =>
+                      case Success(result) =>
+                        if (!result.success) {
+                          publishError("Error while adding pending status element to redis for " + req)
+                        }
+                      case Failure(error)  =>
                         publishError("Error while adding pending status element to redis for " + req, Some(error))
                     }
                   case _ =>

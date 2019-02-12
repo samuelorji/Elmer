@@ -34,13 +34,15 @@ private[service] case class FoodOrderRequest(
 }
 
 private[service] case class FoodOrderResponse(
+  transactionId: String,
   status: String,
   description: String
 ) extends ATCCPrinter
 
 object FoodOrderResponse {
   def fromServiceResponse(response: FoodOrderServiceResponse) = FoodOrderResponse(
-    status      = response.status.toString,
-    description = response.description
+    transactionId = response.transactionId,
+    status        = response.status.toString,
+    description   = response.description
   )
 }

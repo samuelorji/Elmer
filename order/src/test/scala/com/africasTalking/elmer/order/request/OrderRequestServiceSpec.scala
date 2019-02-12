@@ -28,13 +28,19 @@ class OrderRequestServiceSpec extends TestServiceT {
   "The OrderRequestService" must {
     "forward a request and process a gateway response" in {
       OrderRequestService ! FoodOrderServiceRequest(
-        name     = FoodName.Ugali,
-        quantity = 3
+        name        = FoodName.Ugali,
+        quantity    = 3,
+        callbackUrl = None
       )
 
-      gatewayProbe.expectMsg(FoodOrderGatewayRequest(
-        name     = FoodName.Ugali,
-        quantity = 3
+      val gatewayRequest = gatewayProbe.expectMsgType[FoodOrderGatewayRequest]
+      val transactionId  = gatewayRequest.transactionId
+
+      gatewayRequest should be (FoodOrderGatewayRequest(
+        transactionId = transactionId,
+        name          = FoodName.Ugali,
+        quantity      = 3,
+        callbackUrl   = None
       ))
       gatewayProbe.reply(FoodOrderGatewayResponse(
         status      = FoodOrderStatus.Accepted,
@@ -42,8 +48,9 @@ class OrderRequestServiceSpec extends TestServiceT {
       ))
 
       expectMsg(FoodOrderServiceResponse(
-        status      = FoodOrderStatus.Accepted,
-        description = "Order accepted for processing"
+        transactionId = transactionId,
+        status        = FoodOrderStatus.Accepted,
+        description   = "Order accepted for processing"
       ))
 
       gatewayProbe.expectNoMessage(100 millis)

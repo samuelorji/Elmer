@@ -3,6 +3,7 @@ package status
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.util.{ Failure, Success }
+
 import akka.actor.{ Actor, ActorLogging, Props }
 import akka.pattern.ask
 import akka.util.Timeout
@@ -74,7 +75,7 @@ class OrderStatusService extends Actor
                 pendingStatusElement.callbackUrl match {
                   case None      =>
                   case Some(url) =>
-                    clientCallbackService ! ClientCallbackServiceRequest(
+                    clientCallbackService ! ClientCallbackStatusServiceRequest(
                       transactionId = pendingStatusElement.transactionId,
                       status        = req.status,
                       description   = req.description,

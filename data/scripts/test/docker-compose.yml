@@ -7,4 +7,8 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: admin
       
+  redis:
+    image: redis:4.0
+    ports:
+       - "6379:6379"
     

@@ -12,6 +12,11 @@ object ElmerConfig extends ATBaseConfigT {
   val webHost = config.getString("elmer.interface.web.host")
   val webPort = config.getInt("elmer.interface.web.port")
 
+  // order
+  val clientTransactionIdPrefix            = config.getString("elmer.order.client-transaction-id-prefix")
+  val orderPendingStatusElementLifetime    = ATUtil.parseFiniteDuration(config.getString("elmer.order.pending-status-element.lifetime")).get
+  val orderPendingStatusElementRedisPrefix = config.getString("elmer.order.pending-status-element.redis-prefix")
+
   // db
   // mysql
   val mysqlDbAuthenticationCacheUpdateFrequency = ATUtil.parseFiniteDuration(config.getString("elmer.db.mysql.cache.update-frequency.authentication")).get
@@ -26,7 +31,13 @@ object ElmerConfig extends ATBaseConfigT {
   val mysqlDbPoolMaxIdle      = config.getInt("elmer.db.mysql.pool.max-idle")
   val mysqlDbPoolMaxQueueSize = config.getInt("elmer.db.mysql.pool.max-queue-size")
 
+  // redis
+  val elmerRedisDbHost       = config.getString("elmer.db.redis.elmer.host")
+  val elmerRedisDbPort       = config.getInt("elmer.db.redis.elmer.port")
+  val elmerRedisDbNumWorkers = config.getInt("elmer.db.redis.elmer.num-workers")
+
   // Brokers
-  val etherOrderRequestUrl = config.getString("elmer.broker.ether.order-request-url")
+  val etherOrderRequestUrl        = config.getString("elmer.broker.ether.order-request-url")
+  val etherOrderStatusCallbackUrl = config.getString("elmer.broker.ether.order-status-callback-url")
 
 }

@@ -11,11 +11,13 @@ import spray.json._
 
 import io.atlabs._
 
+import horus.core.db.cassandra.CassandraDbQueryResult
 import horus.core.db.redis.RedisDbService._
 import horus.core.util.ATUtil
 
 import com.africasTalking._
 
+import elmer.core.db.cassandra.service.FoodOrderCassandraDbService._
 import elmer.core.util.ElmerEnum._
 
 import elmer.order.callback.ClientCallbackService._
@@ -28,8 +30,10 @@ import OrderStatusService._
 class OrderStatusServiceSpec extends TestServiceT {
 
   val redisDbServiceProbe        = TestProbe()
+  val cassandraDbServiceProbe    = TestProbe()
   val clientCallbackServiceProbe = TestProbe()
   val orderStatusService         = system.actorOf(Props(new OrderStatusService {
+    override def createCassandraDbService    = cassandraDbServiceProbe.ref
     override def createRedisDbService        = redisDbServiceProbe.ref
     override def createClientCallbackService = clientCallbackServiceProbe.ref
   }))
@@ -67,6 +71,14 @@ class OrderStatusServiceSpec extends TestServiceT {
         )
       )
 
+      cassandraDbServiceProbe.expectMsg(FoodOrderStatusCreateDbQuery(
+        transactionId = "SomeTxnId",
+        status        = FoodOrderStatus.Delivered,
+        description   = "The food has been delivered",
+      ))
+      cassandraDbServiceProbe.reply(new CassandraDbQueryResult(true))
+
+      cassandraDbServiceProbe.expectNoMessage(100 millis)
       clientCallbackServiceProbe.expectNoMessage(100 millis)
       redisDbServiceProbe.expectNoMessage(100 millis)
     }

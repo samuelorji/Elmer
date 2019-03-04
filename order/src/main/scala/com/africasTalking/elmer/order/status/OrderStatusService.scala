@@ -13,6 +13,7 @@ import spray.json._
 import io.atlabs._
 
 import horus.core.config.ATConfig
+import horus.core.db.cassandra.CassandraDbQueryResult
 import horus.core.db.redis.RedisDbService
 import horus.core.snoop.SnoopErrorPublisherT
 import horus.core.util.ATCCPrinter
@@ -20,6 +21,7 @@ import horus.core.util.ATCCPrinter
 import com.africasTalking._
 
 import elmer.core.config.ElmerConfig
+import elmer.core.db.cassandra.service.FoodOrderCassandraDbService
 import elmer.core.db.redis.ElmerRedisDb
 import elmer.core.util.ElmerEnum.FoodOrderStatus
 
@@ -46,12 +48,16 @@ class OrderStatusService extends Actor
   private lazy val redisDbService   = createRedisDbService
   def createRedisDbService          = ElmerRedisDb.getInstance
 
+  private val cassandraDbService = createCassandraDbService
+  def createCassandraDbService   = context.actorOf(Props[FoodOrderCassandraDbService])
+
   private val clientCallbackService = createClientCallbackService
   def createClientCallbackService   = context.actorOf(Props[ClientCallbackService])
 
   private val statusElementRedisPrefix = ElmerConfig.orderPendingStatusElementRedisPrefix
 
   import RedisDbService._
+  import FoodOrderCassandraDbService._
   import ClientCallbackService._
   import OrderStatusService._
   import OrderJsonProtocol._
@@ -75,12 +81,26 @@ class OrderStatusService extends Actor
                 pendingStatusElement.callbackUrl match {
                   case None      =>
                   case Some(url) =>
+                    val transactionId = pendingStatusElement.transactionId
                     clientCallbackService ! ClientCallbackStatusServiceRequest(
-                      transactionId = pendingStatusElement.transactionId,
+                      transactionId = transactionId,
                       status        = req.status,
                       description   = req.description,
                       callbackUrl   = url
                     )
+
+                    (cassandraDbService ? FoodOrderStatusCreateDbQuery(
+                      transactionId = transactionId,
+                      status        = req.status,
+                      description   = req.description
+                    )).mapTo[CassandraDbQueryResult] onComplete {
+                      case Success(x)     =>
+                        if (!x.status) {
+                          publishError(s"Error while adding $req to cassandra for $pendingStatusElement")
+                        }
+                      case Failure(error) =>
+                        publishError(s"Error while adding $req to cassandra for $pendingStatusElement", Some(error))
+                    }
                 }
               } catch {
                 case ex: JsonParser.ParsingException =>

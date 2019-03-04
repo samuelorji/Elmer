@@ -42,7 +42,7 @@ trait ElmerWebServiceT extends ElmerCoreServiceT
           entity(as[FoodOrderRequest]) { request =>
             authenticateUser(request.username) { userId =>
               complete(StatusCodes.Created, {
-                (orderRequestService ? request.getServiceRequest).mapTo[FoodOrderServiceResponse]  map { x =>
+                (orderRequestService ? request.getServiceRequest(userId)).mapTo[FoodOrderServiceResponse]  map { x =>
                   FoodOrderResponse.fromServiceResponse(x)
                 }
               })

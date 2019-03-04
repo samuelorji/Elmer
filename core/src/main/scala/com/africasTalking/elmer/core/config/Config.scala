@@ -1,6 +1,8 @@
 package com.africasTalking.elmer.core
 package config
 
+import scala.collection.JavaConverters._
+
 import io.atlabs._
 
 import horus.core.config.ATBaseConfigT
@@ -18,6 +20,13 @@ object ElmerConfig extends ATBaseConfigT {
   val orderPendingStatusElementRedisPrefix = config.getString("elmer.order.pending-status-element.redis-prefix")
 
   // db
+  // cassandra
+  val cassandraUsername = config.getString("elmer.db.cassandra.username")
+  val cassandraPassword = config.getString("elmer.db.cassandra.password")
+  val cassandraHosts    = config.getStringList("elmer.db.cassandra.hosts").asScala.toList
+  val cassandraPort     = config.getInt("elmer.db.cassandra.port")
+  val cassandraKeySpace = config.getString("elmer.db.cassandra.key-space")
+
   // mysql
   val mysqlDbAuthenticationCacheUpdateFrequency = ATUtil.parseFiniteDuration(config.getString("elmer.db.mysql.cache.update-frequency.authentication")).get
 

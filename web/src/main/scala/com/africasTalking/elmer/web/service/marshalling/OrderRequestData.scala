@@ -23,7 +23,8 @@ private[service] case class FoodOrderRequest(
     case Some(x) => require(ATUtil.parseUrl(x) != None, "Invalid callback url provided")
     case None    =>
   }
-  def getServiceRequest = FoodOrderServiceRequest(
+  def getServiceRequest(userId: Int) = FoodOrderServiceRequest(
+    userId      = userId,
     name        = FoodName.withName(foodName),
     quantity    = quantity,
     callbackUrl = callbackUrl match {
